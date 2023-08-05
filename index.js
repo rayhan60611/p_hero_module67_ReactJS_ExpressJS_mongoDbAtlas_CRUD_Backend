@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -49,6 +49,17 @@ async function run() {
       const result = await userCollection.insertOne(user);
       res.send(result);
       console.log(`A document was inserted with the _id: ${result.insertedId}`);
+    });
+
+    //delete user
+    app.delete("/users/:Id", async (req, res) => {
+      const id = req.params.Id;
+      const query = { _id: new ObjectId(id) };
+      const result = await userCollection.deleteOne(query);
+      if (result.deletedCount === 1) {
+        console.log("Successfully deleted one document.");
+        res.send(result);
+      }
     });
 
     // Send a ping to confirm a successful connection
