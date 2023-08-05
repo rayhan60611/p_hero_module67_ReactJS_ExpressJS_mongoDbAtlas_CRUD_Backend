@@ -34,11 +34,18 @@ async function run() {
     const userCollection = database.collection("users");
 
     // All API
-    //get users
-    // Query for a movie that has the title 'The Room'
+    //get all users
     app.get("/users", async (req, res) => {
       const cursor = userCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    //get a single users by id
+    app.get("/users/:Id", async (req, res) => {
+      const id = req.params.Id;
+      const query = { _id: new ObjectId(id) };
+      const result = await userCollection.findOne(query);
       res.send(result);
     });
 
@@ -49,6 +56,36 @@ async function run() {
       const result = await userCollection.insertOne(user);
       res.send(result);
       console.log(`A document was inserted with the _id: ${result.insertedId}`);
+    });
+
+    //update user
+    app.put("/users/:Id", async (req, res) => {
+      const id = req.params.Id;
+      const user = req.body;
+      console.log(user);
+
+      // create a filter for a findng the user by id
+      const filter = { _id: new ObjectId(id) };
+
+      // this option instructs the method to create a document if no documents match the query
+      const options = { upsert: true };
+
+      // create a document that sets the value
+      const updatedUser = {
+        $set: {
+          name: user.name,
+          email: user.email,
+        },
+      };
+
+      // updating
+      const result = await userCollection.updateOne(
+        filter,
+        updatedUser,
+        options
+      );
+
+      res.send(result);
     });
 
     //delete user
