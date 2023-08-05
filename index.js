@@ -34,6 +34,15 @@ async function run() {
     const userCollection = database.collection("users");
 
     // All API
+    //get users
+    // Query for a movie that has the title 'The Room'
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // post user
     app.post("/users", async (req, res) => {
       const user = req.body;
       console.log(user);
