@@ -88,7 +88,7 @@ async function run() {
       res.send(result);
     });
 
-    //delete user
+    //delete single user
     app.delete("/users/:Id", async (req, res) => {
       const id = req.params.Id;
       const query = { _id: new ObjectId(id) };
